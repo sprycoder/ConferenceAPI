@@ -1,5 +1,5 @@
-# ConferenceAPIDmo
-API built on .net core 2.2 for fetching Session and Speaker data from ConferenceDemoAPI and merge its payload. Also, it provides an endpoint to get session (by filtering the payload) by sessionId. 
+# ConferenceAPI
+API built on .net core 2.2 for fetching Session and Speaker data from ConferenceAPI and merge its payload. Also, it provides an endpoint to get session (by filtering the payload) by sessionId. 
 
 Key (technically) features of this API
 - Authentication HTTP Basic (credentials are available in appsettings.json file) 
