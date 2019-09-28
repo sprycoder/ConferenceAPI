@@ -1,1 +1,10 @@
 # ConferenceAPIDmo
+API built on .net core 2.2 for fetching Session and Speaker data from ConferenceDemoAPI and merge its payload. Also, it provides an endpoint to get session (by filtering the payload) by sessionId. 
+
+Key (technically) features of this API
+- Unit testing for various scenarios
+- Exception handling
+- Dependency Injection using Microsoft DI extension
+- AutoMapper to map data from one object to another
+- Swagger for documentation
+- Config class to provide all configred key-values
