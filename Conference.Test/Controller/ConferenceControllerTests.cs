@@ -2,6 +2,8 @@ using Conference.API.Controllers;
 using Conference.API.Model;
 using Conference.API.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -13,17 +15,20 @@ namespace Conference.Test.Controller
 {
     public class ConferenceControllerTests
     {
-        private readonly Mock<IConferenceService> confService;
-        private ConferenceController controller;
+        private readonly Mock<IConferenceService> mockService;
+        private readonly ILogger<ConferenceController> confLogger;
+        private readonly ConferenceController controller;
 
         public ConferenceControllerTests()
         {
             // Arrange
-            confService = new Mock<IConferenceService>();
-            confService.Setup(x => x.GetAllSessions()).Returns(Task.Run(() => (GetSessionResults().AsEnumerable())));
-            confService.Setup(x => x.GetSessionById(It.Is<int>(i => i > int.MinValue))).Returns(Task.Run(() => GetSessionResults().First()));
+            mockService = new Mock<IConferenceService>();
+            mockService.Setup(x => x.GetAllSessions()).Returns(Task.Run(() => (GetSessionResults().AsEnumerable())));
+            mockService.Setup(x => x.GetSessionById(It.Is<int>(i => i > int.MinValue))).Returns(Task.Run(() => GetSessionResults().First()));
 
-            controller = new ConferenceController(confService.Object);
+            confLogger = new NullLogger<ConferenceController>();
+
+            controller = new ConferenceController(mockService.Object, confLogger);
         }
 
         [Fact]
@@ -54,24 +59,27 @@ namespace Conference.Test.Controller
         [Fact]
         public async void GetSessionById_not_found()
         {
+            // Arrange
+            int sessionId = int.MinValue;
+
             // Act 
-            var actionResult = await controller.GetSessionById(int.MinValue);
+            var actionResult = await controller.GetSessionById(sessionId);
 
             // Assert
             var notFoundObjectResult = Assert.IsType<NotFoundObjectResult>(actionResult);
             var result = Assert.IsAssignableFrom<int>(notFoundObjectResult.Value);
-            Assert.Equal(int.MinValue, result);
+            Assert.Equal(sessionId, result);
         }
-
 
         [Fact]
         public async void GetSessionById()
         {
             // Arrange
             var expected = GetSessionResults().First();
+            int sessionId = 101;
 
             // Act 
-            var actionResult = await controller.GetSessionById(101);
+            var actionResult = await controller.GetSessionById(sessionId);
 
             // Assert
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult);
