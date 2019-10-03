@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Conference.API
 {
@@ -12,6 +13,12 @@ namespace Conference.API
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+            .ConfigureLogging(logging =>
+            {
+                logging.ClearProviders();
+                logging.AddConsole();
+                logging.AddDebug();
+            })
+            .UseStartup<Startup>();
     }
 }
