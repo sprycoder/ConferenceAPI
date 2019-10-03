@@ -28,9 +28,10 @@ namespace Conference.API.Service
         {
             if (sessions == null || sessions.Count() == 0)
             {
-                sessions = (await GetSessions()).ToList();
-                List<SpeakerResult> speakers = (await GetSpeakers()).ToList();
                 List<LinkResult> speakerLinks;
+                Task<IEnumerable<SessionResult>> sessionTask = GetSessions();
+                List<SpeakerResult> speakers = (await GetSpeakers()).ToList();
+                sessions = (await sessionTask).ToList();
 
                 for (int counter = 0; counter < sessions.Count(); counter++)
                 {
